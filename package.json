@@ -1,20 +1,21 @@
 {
-  "name": "ts-react-dashboard",
+  "name": "service",
   "version": "1.0.0",
-  "description": "Enterprise admin dashboard with React, Tailwind, and Recharts.",
-  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts"
-  },
-  "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/node": "^18.0.0",
-    "@types/react": "^18.2.0"
+    "test": "jest"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.10",
+    "@types/supertest": "^2.0.16",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.2"
   }
 }
