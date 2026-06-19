@@ -1,26 +1,25 @@
 import express from 'express';
-import cors from 'cors';
+import { z } from 'zod';
 
-const app = express();
-app.use(cors());
+export const app = express();
 app.use(express.json());
 
 app.get('/health', (req, res) => {
-    res.json({ status: 'healthy', domain: 'dashboard', uptime: process.uptime() });
+  res.json({ status: 'healthy', service: 'TS-React-Dashboard' });
 });
 
-app.post('/api/v1/process', (req, res) => {
-    const { payload } = req.body;
-    if (!payload) return res.status(400).json({ error: 'Missing payload' });
-    res.status(201).json({ 
-        success: true, 
-        processed: payload, 
-        timestamp: new Date().toISOString() 
-    });
+app.get('/api/dashboard/metrics', (req, res) => {
+  res.json({
+    activeUsers: 1250,
+    revenue: 45000,
+    uptime: 99.99,
+    charts: {
+      daily: [10, 20, 15, 30, 25, 40, 35]
+    }
+  });
 });
+
 
 if (require.main === module) {
-    app.listen(3000, () => console.log('TS-React-Dashboard API running on port 3000'));
+  app.listen(3000, () => console.log('Server running on port 3000'));
 }
-
-export default app;
