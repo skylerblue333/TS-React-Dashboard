@@ -1,21 +1,18 @@
 # TS-React-Dashboard
 
-## Overview
-Enterprise admin dashboard with React, Tailwind, and Recharts.
+![CI](https://github.com/skylerblue333/TS-React-Dashboard/workflows/CI/badge.svg)
 
-Developed as part of my portfolio showcasing 5 years of full-stack engineering experience. This project demonstrates strict TypeScript configuration, clean component architecture, and modern Node.js practices.
-
-## Quick Start (1-Click Build)
-
-```bash
-git clone https://github.com/skylerblue333/TS-React-Dashboard.git
-cd TS-React-Dashboard
-npm install
-npm run build
-npm start
-```
+Production-ready TypeScript Express API for dashboard operations.
 
 ## Features
-- Strict Type Safety
-- Clean Architecture
-- Production-ready configuration
+- Fully typed Express handlers
+- Supertest integration testing
+- Docker containerization
+- GitHub Actions CI Pipeline
+
+## Quick Start
+```bash
+npm ci
+npm test
+npm run build && npm start
+```
