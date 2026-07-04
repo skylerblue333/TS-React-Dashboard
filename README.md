@@ -1,6 +1,6 @@
 # TS-React-Dashboard
 
-Enterprise admin dashboard with React, Tailwind, and Recharts.
+Scalable admin dashboard with React, Tailwind, and Recharts.
 
 ## 🚀 Overview
 This repository contains a professional implementation of **TS React Dashboard**. It is designed with clean code principles and focuses on functionality and reliability.
