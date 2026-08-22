@@ -1,25 +1,29 @@
-import express from 'express';
-import { z } from 'zod';
+import express, { type Express, type Request, type Response } from "express";
 
-export const app = express();
-app.use(express.json());
+export type DashboardMetrics = {
+  activeUsers: number;
+  revenue: number;
+  uptime: number;
+  charts: { daily: number[] };
+};
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'healthy', service: 'TS-React-Dashboard' });
+export type MetricsProvider = { read(): Promise<DashboardMetrics> };
+
+export const app: Express = express();
+app.disable("x-powered-by");
+app.use(express.json({ limit: "16kb" }));
+
+app.get("/health", (_request: Request, response: Response) => {
+  response.json({ status: "healthy", service: "TS-React-Dashboard" });
 });
 
-app.get('/api/dashboard/metrics', (req, res) => {
-  res.json({
-    activeUsers: 1250,
-    revenue: 45000,
-    uptime: 99.99,
-    charts: {
-      daily: [10, 20, 15, 30, 25, 40, 35]
-    }
+app.get("/api/dashboard/metrics", (_request: Request, response: Response) => {
+  response.status(503).json({
+    status: "unavailable",
+    reason: "No metrics provider is configured; dashboard values are intentionally not fabricated.",
   });
 });
 
-
 if (require.main === module) {
-  app.listen(3000, () => console.log('Server running on port 3000'));
+  app.listen(3000, () => console.log("Dashboard service listening on port 3000"));
 }
