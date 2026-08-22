@@ -1,44 +1,21 @@
-<!-- PORTFOLIO PROJECT PROFILE: maintained by the repository owner -->
+# TypeScript Dashboard Service
 
-## Project profile and code-audit snapshot
+A small Express service boundary for dashboard health and metrics. It is not currently a React admin dashboard, and it does not fabricate users, revenue, uptime, or chart data.
 
-**What this is:** **TS-React-Dashboard** is a public repository described as: “Enterprise admin dashboard with React, Tailwind, and Recharts. #SkyCoin4444 #AI #Blockchain #DevOps #Innovation” Its dominant language signals are **TypeScript (2 files), JavaScript (1 files)**.
+## Implemented behavior
 
-**Why it has value:** Its value is best understood through the implementation evidence currently present in the repository: **18 tracked files** were observed in the shallow audit, with the source structure and existing documentation providing the project’s specific context. This README does not treat a prototype, experiment, or archive as a production system without supporting evidence.
+`GET /health` returns service health. `GET /api/dashboard/metrics` returns `503 Service Unavailable` with an explicit explanation until a real metrics provider is configured. The metrics contract is typed so a later provider can be integrated without silently changing the API shape.
 
-**Implementation evidence:** 1 test-related file(s) detected; 1 dependency or package manifest(s) detected; 2 build/CI/infrastructure signal(s) detected; and 3 documentation or governance file(s) detected. Test filenames observed include `tests/index.test.ts`. Dependency or package files include `package.json`. Build, CI, or infrastructure signals include `Dockerfile`, `.github/workflows/ci.yml`.
+## Validation
 
-**Current status:** The repository is tracked on the `main` branch. The existing source tree, configuration, tests, workflows, and documentation remain authoritative for supported behavior and maturity. A code audit is not a production-readiness certification, and the presence of a test or workflow file does not establish that all checks pass.
+```bash
+pnpm install
+pnpm run build
+pnpm test --runInBand
+```
 
-**Relationship to the wider portfolio:** This repository is one focused component of the broader Skyler Blue Spillers portfolio across AI, software engineering, cloud and DevOps, cybersecurity, blockchain, finance, education, social systems, and creative work. It may provide a service boundary, implementation pattern, experiment, archive, or reusable idea for related repositories. Treat repositories as technical dependencies only where documented interfaces and verified project requirements support that relationship.
+The build and test suite pass. Tests cover the health response and confirm that unavailable metrics are not represented as fake business values.
 
-**Quality and security note:** No obvious secret-like pattern was detected by the limited static scan; this is not a substitute for a security audit. No TODO/FIXME marker was detected in the scanned text files.
+## Scope and limitations
 
----
-
-# Ts React Dashboard
-
-![GitHub stars](https://img.shields.io/github/stars/skylerblue333/TS-React-Dashboard?style=flat-square)
-![GitHub license](https://img.shields.io/github/license/skylerblue333/TS-React-Dashboard?style=flat-square)
-
-## 🌟 Overview
-**TS-React-Dashboard** is a professional-grade project within the **SkyCoin4444** ecosystem. It focuses on delivering high-value solutions in the domain of **TypeScript, JavaScript**.
-
-## 🚀 Key Features
-- **Scalable Architecture**: Designed for enterprise-level growth and performance.
-- **Modern Standards**: Implements best practices for clean code and maintainability.
-- **Robust Integration**: Built to work seamlessly within modern cloud-native environments.
-
-## 🛠️ Technology Stack
-- **Primary Domain**: TypeScript, JavaScript
-- **Ecosystem**: SkyCoin4444 Digital Platform
-
-## 📂 Structure
-The project is organized into a modular structure to ensure clarity and ease of development.
-
-## 👨‍💻 Author
-**Skyler Blue Spillers**
-*Professional Chess Player & Software Engineer*
-
----
-*Powered by SkyCoin4444*
+This repository currently has no React UI, persistence, authentication, authorization, telemetry provider, chart implementation, or deployment evidence. It must not be described as an enterprise admin dashboard until those parts are implemented and tested. The previous “enterprise,” “scalable,” and “cloud-native” claims were removed because the source did not substantiate them.
