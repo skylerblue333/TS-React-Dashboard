@@ -2,10 +2,36 @@ import { z } from 'zod';
 
 const Id = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_.:-]{0,119}$/);
 
+const TextFieldSchema = z.object({
+  id: Id,
+  type: z.literal('text'),
+  required: z.boolean(),
+  maxLength: z.number().int().min(1).max(4000),
+}).strict();
+
+const NumberFieldSchema = z.object({
+  id: Id,
+  type: z.literal('number'),
+  required: z.boolean(),
+  min: z.number().finite().optional(),
+  max: z.number().finite().optional(),
+}).strict().superRefine((field, ctx) => {
+  if (field.min !== undefined && field.max !== undefined && field.min > field.max) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'min must not exceed max', path: ['min'] });
+  }
+});
+
+const ChoiceFieldSchema = z.object({
+  id: Id,
+  type: z.literal('choice'),
+  required: z.boolean(),
+  options: z.array(z.string().min(1).max(200)).min(1).max(100),
+}).strict();
+
 export const FormFieldSchema = z.discriminatedUnion('type', [
-  z.object({ id: Id, type: z.literal('text'), required: z.boolean(), maxLength: z.number().int().min(1).max(4000) }),
-  z.object({ id: Id, type: z.literal('number'), required: z.boolean(), min: z.number().finite().optional(), max: z.number().finite().optional() }),
-  z.object({ id: Id, type: z.literal('choice'), required: z.boolean(), options: z.array(z.string().min(1).max(200)).min(1).max(100) }),
+  TextFieldSchema,
+  NumberFieldSchema,
+  ChoiceFieldSchema,
 ]);
 
 export const FormDefinitionSchema = z.object({
@@ -13,7 +39,7 @@ export const FormDefinitionSchema = z.object({
   version: z.number().int().min(1).max(1_000_000),
   title: z.string().trim().min(1).max(200),
   fields: z.array(FormFieldSchema).min(1).max(100),
-});
+}).strict();
 
 export type FormDefinition = z.infer<typeof FormDefinitionSchema>;
 
@@ -36,8 +62,9 @@ export function validateSubmission(definitionInput: unknown, valuesInput: unknow
   for (const key of Object.keys(values)) if (!allowed.has(key)) errors.push(`${key}: unknown field`);
 
   for (const field of definition.fields) {
-    const value = values[field.id];
-    if (value === undefined || value === null || value === '') {
+    const present = Object.prototype.hasOwnProperty.call(values, field.id);
+    const value = present ? values[field.id] : undefined;
+    if (!present || value === undefined || value === null || value === '') {
       if (field.required) errors.push(`${field.id}: required`);
       continue;
     }
