@@ -26,4 +26,27 @@ describe('SkyForms', () => {
     expect(() => validateSubmission({ ...form, formId: 'bad id' }, {})).toThrow();
     expect(() => validateSubmission({ ...form, fields: [form.fields[0], form.fields[0]] }, {})).toThrow('duplicate field id');
   });
+
+  test('rejects unknown field properties and inverted numeric ranges', () => {
+    const misspelledConstraint = {
+      ...form,
+      fields: [{ id: 'age', type: 'number' as const, required: false, minimum: 10 }],
+    };
+    expect(() => validateSubmission(misspelledConstraint, { age: 5 })).toThrow();
+
+    const invertedRange = {
+      ...form,
+      fields: [{ id: 'age', type: 'number' as const, required: true, min: 10, max: 5 }],
+    };
+    expect(() => validateSubmission(invertedRange, { age: 7 })).toThrow('min must not exceed max');
+  });
+
+  test('treats inherited names as absent unless submitted as own properties', () => {
+    const inheritedNameForm = {
+      ...form,
+      fields: [{ id: 'toString', type: 'text' as const, required: true, maxLength: 40 }],
+    };
+    expect(validateSubmission(inheritedNameForm, {}).errors).toEqual(['toString: required']);
+    expect(validateSubmission(inheritedNameForm, { toString: 'ok' }).valid).toBe(true);
+  });
 });
