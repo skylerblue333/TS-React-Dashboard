@@ -15,11 +15,7 @@ const NumberFieldSchema = z.object({
   required: z.boolean(),
   min: z.number().finite().optional(),
   max: z.number().finite().optional(),
-}).strict().superRefine((field, ctx) => {
-  if (field.min !== undefined && field.max !== undefined && field.min > field.max) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'min must not exceed max', path: ['min'] });
-  }
-});
+}).strict();
 
 const ChoiceFieldSchema = z.object({
   id: Id,
@@ -32,7 +28,20 @@ export const FormFieldSchema = z.discriminatedUnion('type', [
   TextFieldSchema,
   NumberFieldSchema,
   ChoiceFieldSchema,
-]);
+]).superRefine((field, ctx) => {
+  if (
+    field.type === 'number'
+    && field.min !== undefined
+    && field.max !== undefined
+    && field.min > field.max
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'min must not exceed max',
+      path: ['min'],
+    });
+  }
+});
 
 export const FormDefinitionSchema = z.object({
   formId: Id,
